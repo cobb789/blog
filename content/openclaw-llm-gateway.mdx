@@ -87,29 +87,27 @@ elif model.startswith("gemini"):
 
 1. **一个 API，50+ 模型**
 
-```python
-from openai import OpenAI
+OfoxAI 同时支持 **Anthropic 原生协议** 和 OpenAI 兼容协议。推荐使用 Anthropic 协议，能完整支持 Claude 的所有特性（extended thinking、tool use 等）：
 
-client = OpenAI(
-    base_url="https://api.ofox.ai/v1",
+```python
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="https://api.ofox.ai",
     api_key="<YOUR_OFOXAI_KEY>"
 )
 
-# 用 GPT-4
-response = client.chat.completions.create(
-    model="openai/gpt-4-turbo",
-    messages=[{"role": "user", "content": "Hello!"}]
-)
-
-# 切换到 Claude Opus，只改一个参数
-response = client.chat.completions.create(
+# 用 Claude Opus
+response = client.messages.create(
     model="anthropic/claude-opus-4-5",
+    max_tokens=4096,
     messages=[{"role": "user", "content": "Hello!"}]
 )
 
-# 用 Gemini？同样简单
-response = client.chat.completions.create(
-    model="google/gemini-2.0-flash",
+# 切换到 Sonnet，只改一个参数
+response = client.messages.create(
+    model="anthropic/claude-sonnet-4-5",
+    max_tokens=4096,
     messages=[{"role": "user", "content": "Hello!"}]
 )
 ```
@@ -133,11 +131,12 @@ response = client.chat.completions.create(
 # export HTTP_PROXY=...
 # export HTTPS_PROXY=...
 
-# 直接调
-curl https://api.ofox.ai/v1/chat/completions \
-  -H "Authorization: Bearer $OFOXAI_API_KEY" \
+# 直接调（Anthropic 协议）
+curl https://api.ofox.ai/v1/messages \
+  -H "x-api-key: $OFOXAI_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
   -H "Content-Type: application/json" \
-  -d '{"model": "openai/gpt-4-turbo", "messages": [{"role": "user", "content": "Hi"}]}'
+  -d '{"model": "anthropic/claude-sonnet-4-5", "max_tokens": 1024, "messages": [{"role": "user", "content": "Hi"}]}'
 ```
 
 4. **统一计费，更便宜**
@@ -163,11 +162,11 @@ curl https://api.ofox.ai/v1/chat/completions \
     OFOXAI_API_KEY: "your-ofoxai-api-key-here"
   },
 
-  // 配置 OfoxAI 作为 provider
+  // 配置 OfoxAI 作为 provider（使用 Anthropic 协议）
   providers: {
     ofoxai: {
-      type: "openai",  // OfoxAI 兼容 OpenAI API 格式
-      baseURL: "https://api.ofox.ai/v1",
+      type: "anthropic",  // 推荐使用 Anthropic 原生协议
+      baseURL: "https://api.ofox.ai",
       apiKeyEnv: "OFOXAI_API_KEY"
     }
   },
@@ -182,6 +181,8 @@ curl https://api.ofox.ai/v1/chat/completions \
   }
 }
 ```
+
+> **为什么用 Anthropic 协议？** OpenClaw 底层就是基于 Claude 构建的，使用 Anthropic 原生协议能完整支持 extended thinking、tool use、vision 等高级特性，体验最佳。
 
 ### Step 3: 验证配置
 
