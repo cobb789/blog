@@ -4,6 +4,7 @@ import { format, parseISO } from 'date-fns'
 import { zhCN } from 'date-fns/locale'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { MDXContent } from '@/app/components/mdx-content'
 
 interface PostPageProps {
   params: {
@@ -59,7 +60,7 @@ export default function PostPage({ params }: PostPageProps) {
         </header>
 
         <div className="prose prose-zinc dark:prose-invert max-w-none">
-          <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
+          <MDXContent code={post.body.code} />
         </div>
 
         <footer className="mt-16 pt-8 border-t">
