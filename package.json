@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "contentlayer build && next dev",
+    "build": "contentlayer build && next build",
     "start": "next start",
     "lint": "next lint",
     "export": "next build"
@@ -18,7 +18,8 @@
     "date-fns": "^3.0.0",
     "tailwind-merge": "^2.2.0",
     "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0"
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.344.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
